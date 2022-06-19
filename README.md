@@ -1,2 +1,2 @@
 # snake
-Web snake game built in Rust Wasm.
+Web snake game built in Golang WASM.

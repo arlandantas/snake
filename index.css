@@ -4,7 +4,8 @@
     height: 500px;
     width: 500px;
     justify-content: center;
-    border: 1px solid green;
+    border: 1px solid red;
+    padding: 2px;
 }
 
 #world .row {
@@ -14,7 +15,6 @@
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: center;
-    border: 1px solid blue;
 }
 
 #world .row .cell {
@@ -26,4 +26,5 @@
     flex-grow: 1;
     flex-shrink: 1;
     border: 1px solid red;
+    margin: 2px;
 }

@@ -37,15 +37,18 @@ func initilizeHandlers() {
 	if err == nil {
 		jsDoc.Set("onkeypress", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 			keyCode := args[0].Get("charCode").Int()
-			switch keyCode {
-			case 97:
-				setSnakeHeadDirection(SnakeMoveLeft)
-			case 119:
-				setSnakeHeadDirection(SnakeMoveUp)
-			case 115:
-				setSnakeHeadDirection(SnakeMoveDown)
-			case 100:
-				setSnakeHeadDirection(SnakeMoveRight)
+			if keyCode == 97 || keyCode == 119 || keyCode == 115 || keyCode == 100 {
+				switch keyCode {
+				case 97:
+					setSnakeHeadDirection(SnakeMoveLeft)
+				case 119:
+					setSnakeHeadDirection(SnakeMoveUp)
+				case 115:
+					setSnakeHeadDirection(SnakeMoveDown)
+				case 100:
+					setSnakeHeadDirection(SnakeMoveRight)
+				}
+				moveSnake(true)
 			}
 			return true
 		}))

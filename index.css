@@ -1,5 +1,6 @@
 :root {
     --snake-color: #0a0;
+    --snake-eye-color: #a00;
     --wall-color: #aa0;
     --food-color: #00a;
     --cell-border: #aaa;
@@ -44,6 +45,13 @@
 .cell.snake {
     background: var(--snake-color);
     border-radius: 50% !important;
+}
+.cell.snake.head::before {
+    content: ' ';
+    height: 10px;
+    width: 10px;
+    background-color: var(--snake-eye-color);
+    border-radius: 50%;
 }
 
 .cell.wall {

@@ -44,6 +44,7 @@ var currentSnakeTail = Position{y: 0, x: 0}
 var isSnakeAlive = true
 var currentScore = 0
 var tickIntervalId = 0
+var skipNextTickMove = false
 
 func loadStage(stageIndex int) {
 	stage := stages[stageIndex]
@@ -84,7 +85,7 @@ func setSnakeHeadDirection(direction SnakeMovementDirection) bool {
 	return false
 }
 
-func moveSnake() {
+func moveSnake(userInput bool) {
 	previousHeadDirection := world[currentSnakeHead.y][currentSnakeHead.x]
 	switch previousHeadDirection {
 	case WorldCellSnakeMovingRight:
@@ -120,6 +121,7 @@ func moveSnake() {
 		currentScore++
 	}
 	world[currentSnakeHead.y][currentSnakeHead.x] = previousHeadDirection
+	skipNextTickMove = userInput
 }
 
 func printWorldString() {
@@ -188,6 +190,9 @@ func getCellClasses(y, x int) string {
 	isNotOnRight := x < len(world[0])-1
 	if isValidContentType(SnakeWorldCellContents, cell) {
 		classes += " snake"
+		if currentSnakeHead.x == x && currentSnakeHead.y == y {
+			classes += " head"
+		}
 		if isNotOnTop && isValidContentType(SnakeWorldCellContents, world[y-1][x]) {
 			classes += " top"
 		}
@@ -265,7 +270,10 @@ func printWorld() {
 
 func tick() bool {
 	fmt.Println("ticking...")
-	moveSnake()
+	if !skipNextTickMove {
+		moveSnake(false)
+	}
+	skipNextTickMove = false
 	printWorld()
 	if !isSnakeAlive {
 		clearInterval(tickIntervalId)

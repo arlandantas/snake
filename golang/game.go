@@ -25,9 +25,7 @@ const (
 	SnakeMoveLeft
 )
 
-const WORLD_SIZE = 10
-
-var world [WORLD_SIZE][WORLD_SIZE]WorldCellContent
+var world [][]WorldCellContent
 
 type Position struct {
 	x int
@@ -35,18 +33,21 @@ type Position struct {
 }
 
 var currentSnakeDirection = SnakeMoveRight
-var currentSnakeHead = Position{y: 1, x: 4}
-var currentSnakeTail = Position{y: 1, x: 2}
+var currentSnakeHead = Position{y: 0, x: 0}
+var currentSnakeTail = Position{y: 0, x: 0}
 var isSnakeAlive = true
 var currentScore = 0
 var tickIntervalId = 0
 
-func loadStage() {
+func loadStage(stageIndex int) {
+	stage := stages[stageIndex]
+	world = stage.initialWorld
+	currentSnakeHead = stage.initialSnakeHead
+	currentSnakeTail = stage.initialSnakeTail
 	worldHtml := ""
-	for i := 0; i < WORLD_SIZE; i++ {
+	for i := range world {
 		worldHtml += "\t<div class=\"row\">\n"
-		for j := 0; j < WORLD_SIZE; j++ {
-			world[i][j] = WorldCellEmpty
+		for j := range world[i] {
 			worldHtml += fmt.Sprintf("\t\t<div class=\"cell\" id=\"cell%d%d\"></div>\n", i, j)
 		}
 		worldHtml += "</div>"
@@ -56,14 +57,6 @@ func loadStage() {
 		} else {
 			div.Set("innerHTML", worldHtml)
 		}
-	}
-	currentSnakeHead = Position{y: 1, x: 2}
-	currentSnakeTail = Position{y: 1, x: 0}
-	world[1][0] = WorldCellSnakeMovingRight
-	world[1][1] = WorldCellSnakeMovingRight
-	world[1][2] = WorldCellSnakeMovingRight
-	for i := 0; i < 10; i++ {
-		world[6][i] = WorldCellFood
 	}
 }
 
@@ -97,8 +90,8 @@ func moveSnake() {
 	case WorldCellSnakeMovingDown:
 		currentSnakeHead.y += 1
 	}
-	if currentSnakeHead.x < 0 || currentSnakeHead.x >= WORLD_SIZE ||
-		currentSnakeHead.y < 0 || currentSnakeHead.y >= WORLD_SIZE ||
+	if currentSnakeHead.x < 0 || currentSnakeHead.x >= len(world[0]) ||
+		currentSnakeHead.y < 0 || currentSnakeHead.y >= len(world) ||
 		(world[currentSnakeHead.y][currentSnakeHead.x] != WorldCellEmpty &&
 			world[currentSnakeHead.y][currentSnakeHead.x] != WorldCellFood) {
 		isSnakeAlive = false
@@ -125,19 +118,19 @@ func moveSnake() {
 
 func printWorldString() {
 	content := fmt.Sprintf("Score: %d\n|", currentScore)
-	for i := 0; i < WORLD_SIZE; i++ {
+	for range world[0] {
 		content += "-"
 	}
 	content += "|\n"
-	for i := 0; i < len(world); i++ {
+	for i := range world {
 		content += "|"
-		for j := 0; j < len(world[i]); j++ {
-			content += getHtmlCellContent(world[i][j])
+		for j := range world[i] {
+			content += getCharByCellContent(world[i][j])
 		}
 		content += "|\n"
 	}
 	content += "|"
-	for i := 0; i < WORLD_SIZE; i++ {
+	for range world[0] {
 		content += "-"
 	}
 	content += "|\n"
@@ -149,14 +142,14 @@ func getCellId(y, x int) string {
 }
 
 func updateHtmlWorld() {
-	for y := 0; y < len(world); y++ {
-		for x := 0; x < len(world[y]); x++ {
+	for y := range world {
+		for x := range world[y] {
 			cell, err := getElementById(getCellId(y, x))
 			if err != nil {
 				fmt.Printf("Failed to get worldDiv: %s\n", err)
 				break
 			}
-			cell.Set("innerHTML", getHtmlCellContent(world[y][x]))
+			cell.Set("innerHTML", getCharByCellContent(world[y][x]))
 		}
 	}
 	bMessage, err := getElementById("message")
@@ -171,22 +164,41 @@ func updateHtmlWorld() {
 	}
 }
 
-func getHtmlCellContent(content WorldCellContent) string {
-	switch {
-	case content == WorldCellSnakeMovingUp:
+func getCharByCellContent(content WorldCellContent) string {
+	switch content {
+	case WorldCellSnakeMovingUp:
 		return "^"
-	case content == WorldCellSnakeMovingDown:
+	case WorldCellSnakeMovingDown:
 		return "v"
-	case content == WorldCellSnakeMovingRight:
+	case WorldCellSnakeMovingRight:
 		return ">"
-	case content == WorldCellSnakeMovingLeft:
+	case WorldCellSnakeMovingLeft:
 		return "<"
-	case content == WorldCellWall:
+	case WorldCellWall:
 		return "X"
-	case content == WorldCellFood:
+	case WorldCellFood:
 		return "0"
 	default:
 		return " "
+	}
+}
+
+func getCellContentByChar(char string) WorldCellContent {
+	switch char {
+	case "^":
+		return WorldCellSnakeMovingUp
+	case "v":
+		return WorldCellSnakeMovingDown
+	case ">":
+		return WorldCellSnakeMovingRight
+	case "<":
+		return WorldCellSnakeMovingLeft
+	case "X":
+		return WorldCellWall
+	case "0":
+		return WorldCellFood
+	default:
+		return WorldCellEmpty
 	}
 }
 
@@ -211,7 +223,7 @@ func startGame() {
 		fmt.Println("starting game...")
 		isSnakeAlive = true
 		currentScore = 0
-		loadStage()
+		loadStage(0)
 		printWorld()
 		intervalId, err := setInterval("tickGame", 500)
 		if err != nil {

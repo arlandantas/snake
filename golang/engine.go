@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 type WorldCellContent int
@@ -42,6 +43,7 @@ var currentScore = 0
 var tickIntervalId = 0
 var skipNextTickMove = false
 var currentStage Stage
+var randomSource = rand.New(rand.NewSource(time.Now().Unix()))
 
 func loadStage(stageIndex int) {
 	currentStage = stages[stageIndex]
@@ -130,8 +132,9 @@ func tick() bool {
 }
 
 func createFood() {
-	y := rand.Intn(worldH)
-	x := rand.Intn(worldW)
+	randomSource = rand.New(rand.NewSource(time.Now().Unix()))
+	y := randomSource.Intn(worldH)
+	x := randomSource.Intn(worldW)
 	if world[y][x] == WorldCellEmpty {
 		world[y][x] = WorldCellFood
 		return

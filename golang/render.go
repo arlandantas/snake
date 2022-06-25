@@ -11,6 +11,23 @@ var SnakeWorldCellContents = []WorldCellContent{
 	WorldCellSnakeMovingLeft,
 }
 
+func renderInitialWorld() {
+	worldHtml := ""
+	for i := range world {
+		worldHtml += "\t<div class=\"row\">\n"
+		for j := range world[i] {
+			worldHtml += fmt.Sprintf("\t\t<div class=\"cell\" id=\"cell%d%d\"></div>\n", i, j)
+		}
+		worldHtml += "</div>"
+	}
+	div, err := getElementById("world")
+	if err != nil {
+		fmt.Printf("Failed to get world div: %s\n", err)
+	} else {
+		div.Set("innerHTML", worldHtml)
+	}
+}
+
 func printWorldString() {
 	content := fmt.Sprintf("Score: %d\n|", currentScore)
 	for range world[0] {

@@ -41,28 +41,16 @@ var isSnakeAlive = true
 var currentScore = 0
 var tickIntervalId = 0
 var skipNextTickMove = false
+var currentStage Stage
 
 func loadStage(stageIndex int) {
-	stage := stages[stageIndex]
-	world = stage.initialWorld
+	currentStage = stages[stageIndex]
+	world = currentStage.initialWorld
 	worldH = len(world)
 	worldW = len(world[0])
-	currentSnakeHead = stage.initialSnakeHead
-	currentSnakeTail = stage.initialSnakeTail
-	worldHtml := ""
-	for i := range world {
-		worldHtml += "\t<div class=\"row\">\n"
-		for j := range world[i] {
-			worldHtml += fmt.Sprintf("\t\t<div class=\"cell\" id=\"cell%d%d\"></div>\n", i, j)
-		}
-		worldHtml += "</div>"
-		div, err := getElementById("world")
-		if err != nil {
-			fmt.Printf("Failed to get world div: %s\n", err)
-		} else {
-			div.Set("innerHTML", worldHtml)
-		}
-	}
+	currentSnakeHead = currentStage.initialSnakeHead
+	currentSnakeTail = currentStage.initialSnakeTail
+	renderInitialWorld()
 }
 
 func setSnakeHeadDirection(direction SnakeMovementDirection) bool {
@@ -84,24 +72,29 @@ func setSnakeHeadDirection(direction SnakeMovementDirection) bool {
 }
 
 func moveSnake(userInput bool) {
+	if tickIntervalId == 0 {
+		return
+	}
 	previousHeadDirection := world[currentSnakeHead.y][currentSnakeHead.x]
+	newY, newX := currentSnakeHead.y, currentSnakeHead.x
 	switch previousHeadDirection {
 	case WorldCellSnakeMovingRight:
-		currentSnakeHead.x += 1
+		newX += 1
 	case WorldCellSnakeMovingLeft:
-		currentSnakeHead.x -= 1
+		newX -= 1
 	case WorldCellSnakeMovingUp:
-		currentSnakeHead.y -= 1
+		newY -= 1
 	case WorldCellSnakeMovingDown:
-		currentSnakeHead.y += 1
+		newY += 1
 	}
-	if currentSnakeHead.x < 0 || currentSnakeHead.x >= worldW ||
-		currentSnakeHead.y < 0 || currentSnakeHead.y >= worldH ||
-		(world[currentSnakeHead.y][currentSnakeHead.x] != WorldCellEmpty &&
-			world[currentSnakeHead.y][currentSnakeHead.x] != WorldCellFood) {
+	if newX < 0 || newX >= worldW ||
+		newY < 0 || newY >= worldH ||
+		(world[newY][newX] != WorldCellEmpty &&
+			world[newY][newX] != WorldCellFood) {
 		isSnakeAlive = false
 		return
 	}
+	currentSnakeHead.y, currentSnakeHead.x = newY, newX
 	if world[currentSnakeHead.y][currentSnakeHead.x] != WorldCellFood {
 		previousTailDirection := world[currentSnakeTail.y][currentSnakeTail.x]
 		world[currentSnakeTail.y][currentSnakeTail.x] = WorldCellEmpty

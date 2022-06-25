@@ -11,12 +11,16 @@
 </head>
 <body>
     <h1>Snake WASM</h1>
+    <div>
+        <button onclick="startGame()">Iniciar Jogo</button>
+    </div>
     <b id="message"></b>
     <div id="world"></div>
-    <button onclick="startGame()">Iniciar Jogo</button>
-    <button onclick="clickUp()">W</button>
-    <button onclick="clickLeft()">A</button>
-    <button onclick="clickDown()">S</button>
-    <button onclick="clickRight()">D</button>
+    <div id="arrow_buttons">
+        <button onclick="clickLeft()">&larr;</button>
+        <button onclick="clickRight()">&rarr;</button>
+        <button onclick="clickUp()">&uarr;</button>
+        <button onclick="clickDown()">&darr;</button>
+    </div>
 </body>
 </html>

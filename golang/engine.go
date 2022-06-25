@@ -117,7 +117,6 @@ func moveSnake(userInput bool) {
 }
 
 func tick() bool {
-	fmt.Println("ticking...")
 	if !skipNextTickMove {
 		moveSnake(false)
 	}
@@ -145,7 +144,7 @@ func startGame() {
 		fmt.Println("starting game...")
 		isSnakeAlive = true
 		currentScore = 0
-		loadStage(0)
+		loadStage(1)
 		createFood()
 		printWorld()
 		intervalId, err := setInterval("tickGame", 500)

@@ -88,25 +88,47 @@ func isValidContentType(haystack []WorldCellContent, needle WorldCellContent) bo
 func getCellClasses(y, x int) string {
 	classes := "cell"
 	cell := world[y][x]
+	cellPosition := Position{x, y}
 	isNotOnTop := y > 0
 	isNotOnBottom := y < worldH-1
 	isNotOnLeft := x > 0
 	isNotOnRight := x < worldW-1
-	if isValidContentType(SnakeWorldCellContents, cell) {
-		classes += " snake"
-		if currentSnakeHead.x == x && currentSnakeHead.y == y {
-			classes += " head"
-		}
-		if isNotOnTop && isValidContentType(SnakeWorldCellContents, world[y-1][x]) {
-			classes += " top"
-		}
-		if isNotOnBottom && isValidContentType(SnakeWorldCellContents, world[y+1][x]) {
+	if currentSnakeHead == cellPosition {
+		classes += " snake  head"
+		switch cell {
+		case WorldCellSnakeMovingUp:
 			classes += " bottom"
+		case WorldCellSnakeMovingDown:
+			classes += " top"
+		case WorldCellSnakeMovingRight:
+			classes += " left"
+		case WorldCellSnakeMovingLeft:
+			classes += " right"
 		}
-		if isNotOnLeft && isValidContentType(SnakeWorldCellContents, world[y][x-1]) {
+	} else if currentSnakeTail == cellPosition {
+		classes += " snake"
+		switch cell {
+		case WorldCellSnakeMovingUp:
+			classes += " top"
+		case WorldCellSnakeMovingDown:
+			classes += " bottom"
+		case WorldCellSnakeMovingRight:
+			classes += " right"
+		case WorldCellSnakeMovingLeft:
 			classes += " left"
 		}
-		if isNotOnRight && isValidContentType(SnakeWorldCellContents, world[y][x+1]) {
+	} else if isValidContentType(SnakeWorldCellContents, cell) {
+		classes += " snake"
+		if isNotOnTop && (world[y-1][x] == WorldCellSnakeMovingDown || cell == WorldCellSnakeMovingUp) {
+			classes += " top"
+		}
+		if isNotOnBottom && (world[y+1][x] == WorldCellSnakeMovingUp || cell == WorldCellSnakeMovingDown) {
+			classes += " bottom"
+		}
+		if isNotOnLeft && (world[y][x-1] == WorldCellSnakeMovingRight || cell == WorldCellSnakeMovingLeft) {
+			classes += " left"
+		}
+		if isNotOnRight && (world[y][x+1] == WorldCellSnakeMovingLeft || cell == WorldCellSnakeMovingRight) {
 			classes += " right"
 		}
 	} else if cell == WorldCellWall {
@@ -168,6 +190,6 @@ func getCellContentByChar(char string) WorldCellContent {
 }
 
 func printWorld() {
-	printWorldString()
+	// printWorldString()
 	updateHtmlWorld()
 }

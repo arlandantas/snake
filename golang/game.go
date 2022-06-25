@@ -179,26 +179,6 @@ func isValidContentType(haystack []WorldCellContent, needle WorldCellContent) bo
 	return false
 }
 
-func getAround(value int, max int) []int {
-	var ret []int
-	if value > 1 {
-		ret = append(ret, value-1)
-	}
-	ret = append(ret, value)
-	if value < max-1 {
-		ret = append(ret, value+1)
-	}
-	return ret
-}
-
-func getXs(x int) []int {
-	return getAround(x, len(world[0]))
-}
-
-func getYs(y int) []int {
-	return getAround(y, len(world))
-}
-
 func getCellClasses(y, x int) string {
 	classes := "cell"
 	cell := world[y][x]

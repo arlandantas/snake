@@ -13,16 +13,36 @@ var SnakeWorldCellContents = []WorldCellContent{
 
 func renderInitialWorld() {
 	worldHtml := ""
+	if currentStage.boundary {
+		worldHtml += "<div class=\"row boundary\">"
+		for j := 0; j < worldW+2; j++ {
+			worldHtml += "<div class=\"cell\"></div>"
+		}
+		worldHtml += "</div>"
+	}
 	for i := range world {
-		worldHtml += "\t<div class=\"row\">\n"
+		worldHtml += "<div class=\"row\">"
+		if currentStage.boundary {
+			worldHtml += "<div class=\"cell boundary\"></div>"
+		}
 		for j := range world[i] {
-			worldHtml += fmt.Sprintf("\t\t<div class=\"cell\" id=\"cell%d%d\"></div>\n", i, j)
+			worldHtml += fmt.Sprintf("<div class=\"cell\" id=\"cell%d%d\"></div>", i, j)
+		}
+		if currentStage.boundary {
+			worldHtml += "<div class=\"cell boundary\"></div>"
+		}
+		worldHtml += "</div>"
+	}
+	if currentStage.boundary {
+		worldHtml += "<div class=\"row boundary\">"
+		for j := 0; j < worldW+2; j++ {
+			worldHtml += "<div class=\"cell\"></div>"
 		}
 		worldHtml += "</div>"
 	}
 	div, err := getElementById("world")
 	if err != nil {
-		fmt.Printf("Failed to get world div: %s\n", err)
+		fmt.Printf("Failed to get world div: %s", err)
 	} else {
 		div.Set("innerHTML", worldHtml)
 	}

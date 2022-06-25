@@ -10,6 +10,7 @@ type Stage struct {
 	initialSnakeTail Position
 	name             string
 	speed            int
+	boundary         bool
 }
 
 func getWorldCellContentArrayFromString(strWorld string) [][]WorldCellContent {
@@ -41,8 +42,9 @@ var stages = []Stage{
 				"          \n" +
 				"          ",
 		),
-		name:  "The begining",
-		speed: 500,
+		name:     "The begining",
+		speed:    500,
+		boundary: false,
 	},
 	{
 		initialSnakeHead: Position{y: 1, x: 4},
@@ -59,7 +61,8 @@ var stages = []Stage{
 				"          \n" +
 				"          ",
 		),
-		name:  "A wall",
-		speed: 500,
+		name:     "A wall",
+		speed:    500,
+		boundary: true,
 	},
 }

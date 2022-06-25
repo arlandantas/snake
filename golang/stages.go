@@ -34,14 +34,32 @@ var stages = []Stage{
 				"  >>>     \n" +
 				"          \n" +
 				"          \n" +
-				"XXXXX     \n" +
 				"          \n" +
-				"  0       \n" +
+				"          \n" +
+				"          \n" +
 				"          \n" +
 				"          \n" +
 				"          ",
 		),
-		name:  "slkjdf",
+		name:  "The begining",
+		speed: 500,
+	},
+	{
+		initialSnakeHead: Position{y: 1, x: 4},
+		initialSnakeTail: Position{y: 1, x: 2},
+		initialWorld: getWorldCellContentArrayFromString(
+			"          \n" +
+				"  >>>     \n" +
+				"          \n" +
+				"          \n" +
+				"XXXXX     \n" +
+				"          \n" +
+				"          \n" +
+				"          \n" +
+				"          \n" +
+				"          ",
+		),
+		name:  "A wall",
 		speed: 500,
 	},
 }

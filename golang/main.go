@@ -49,6 +49,7 @@ func initilizeHandlers() {
 					setSnakeHeadDirection(SnakeMoveRight)
 				}
 				moveSnake(true)
+				printWorld()
 			}
 			return true
 		}))

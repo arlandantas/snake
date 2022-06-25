@@ -1,7 +1,7 @@
 :root {
     --snake-color: #0a0;
     --snake-eye-color: #a00;
-    --wall-color: #aa0;
+    --wall-color: #d50;
     --food-color: #00a;
     --cell-border: #aaa;
 }

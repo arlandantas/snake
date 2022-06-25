@@ -26,21 +26,21 @@ const (
 	SnakeMoveLeft
 )
 
-var world [][]WorldCellContent
-var worldW = 0
-var worldH = 0
-
 type Position struct {
 	x int
 	y int
 }
 
+var world [][]WorldCellContent
+var worldW = 0
+var worldH = 0
+var currentSpeed = 0
+var gameRunning = false
 var currentSnakeDirection = SnakeMoveRight
 var currentSnakeHead = Position{y: 0, x: 0}
 var currentSnakeTail = Position{y: 0, x: 0}
 var isSnakeAlive = true
 var currentScore = 0
-var tickIntervalId = 0
 var skipNextTickMove = false
 var currentStageIndex = 0
 var currentStage Stage
@@ -53,6 +53,7 @@ func loadStage(stageIndex int) {
 	worldW = len(world[0])
 	currentSnakeHead = currentStage.initialSnakeHead
 	currentSnakeTail = currentStage.initialSnakeTail
+	currentSpeed = currentStage.initialSpeed
 	renderInitialWorld()
 }
 
@@ -80,7 +81,7 @@ func setSnakeHeadDirection(direction SnakeMovementDirection) {
 }
 
 func moveSnake(userInput bool) {
-	if tickIntervalId == 0 {
+	if !gameRunning {
 		return
 	}
 	previousHeadDirection := world[currentSnakeHead.y][currentSnakeHead.x]
@@ -143,6 +144,9 @@ func moveSnake(userInput bool) {
 		}
 	} else {
 		createFood()
+		if currentSpeed > 50 {
+			currentSpeed -= 10
+		}
 		currentScore++
 	}
 	world[currentSnakeHead.y][currentSnakeHead.x] = previousHeadDirection
@@ -155,9 +159,12 @@ func tick() bool {
 	}
 	skipNextTickMove = false
 	printWorld()
-	if !isSnakeAlive {
-		clearInterval(tickIntervalId)
-		tickIntervalId = 0
+	gameRunning = isSnakeAlive
+	if gameRunning {
+		_, err := setTimeout("tickGame", currentSpeed)
+		if err != nil {
+			fmt.Printf("Failed to set interval! %s\n", err)
+		}
 	}
 	return isSnakeAlive
 }
@@ -174,17 +181,20 @@ func createFood() {
 }
 
 func startGame() {
-	if tickIntervalId == 0 {
+	if !gameRunning {
 		fmt.Println("starting game...")
+		gameRunning = true
 		isSnakeAlive = true
 		currentScore = 0
 		loadStage(currentStageIndex)
 		createFood()
 		printWorld()
-		intervalId, err := setInterval("tickGame", 500)
+		tick()
+		startBtn, err := getElementById("start_game")
 		if err != nil {
-			fmt.Printf("Failed to set interval! %s\n", err)
+			fmt.Printf("Failed to get startGame button %s", err)
+		} else {
+			startBtn.Get("style").Set("display", "none")
 		}
-		tickIntervalId = intervalId
 	}
 }

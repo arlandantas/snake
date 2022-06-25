@@ -9,7 +9,7 @@ type Stage struct {
 	initialSnakeHead Position
 	initialSnakeTail Position
 	name             string
-	speed            int
+	initialSpeed     int
 	boundary         bool
 }
 
@@ -42,9 +42,9 @@ var stages = []Stage{
 				"          \n" +
 				"          ",
 		),
-		name:     "The begining",
-		speed:    500,
-		boundary: false,
+		initialSpeed: 500,
+		name:         "The begining",
+		boundary:     false,
 	},
 	{
 		initialSnakeHead: Position{y: 1, x: 4},
@@ -61,8 +61,8 @@ var stages = []Stage{
 				"          \n" +
 				"          ",
 		),
-		name:     "A wall",
-		speed:    500,
-		boundary: true,
+		initialSpeed: 500,
+		name:         "A wall",
+		boundary:     true,
 	},
 }

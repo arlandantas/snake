@@ -48,8 +48,6 @@ func initilizeHandlers() {
 				case 100:
 					setSnakeHeadDirection(SnakeMoveRight)
 				}
-				moveSnake(true)
-				printWorld()
 			}
 			return true
 		}))

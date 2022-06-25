@@ -56,22 +56,27 @@ func loadStage(stageIndex int) {
 	renderInitialWorld()
 }
 
-func setSnakeHeadDirection(direction SnakeMovementDirection) bool {
+func setSnakeHeadDirection(direction SnakeMovementDirection) {
 	currentDirection := world[currentSnakeHead.y][currentSnakeHead.x]
+	moved := false
 	if direction == SnakeMoveUp && currentDirection != WorldCellSnakeMovingDown {
-		world[currentSnakeHead.y][currentSnakeHead.x] = WorldCellSnakeMovingUp
-		return true
+		currentDirection = WorldCellSnakeMovingUp
+		moved = true
 	} else if direction == SnakeMoveRight && currentDirection != WorldCellSnakeMovingLeft {
-		world[currentSnakeHead.y][currentSnakeHead.x] = WorldCellSnakeMovingRight
-		return true
+		currentDirection = WorldCellSnakeMovingRight
+		moved = true
 	} else if direction == SnakeMoveDown && currentDirection != WorldCellSnakeMovingUp {
-		world[currentSnakeHead.y][currentSnakeHead.x] = WorldCellSnakeMovingDown
-		return true
+		currentDirection = WorldCellSnakeMovingDown
+		moved = true
 	} else if direction == SnakeMoveLeft && currentDirection != WorldCellSnakeMovingRight {
-		world[currentSnakeHead.y][currentSnakeHead.x] = WorldCellSnakeMovingLeft
-		return true
+		currentDirection = WorldCellSnakeMovingLeft
+		moved = true
 	}
-	return false
+	if moved {
+		world[currentSnakeHead.y][currentSnakeHead.x] = currentDirection
+		moveSnake(true)
+		printWorld()
+	}
 }
 
 func moveSnake(userInput bool) {

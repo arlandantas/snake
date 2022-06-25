@@ -9,7 +9,6 @@ type SnakeMovementDirection int
 
 const (
 	WorldCellEmpty WorldCellContent = iota
-	WorldCellSnakeHead
 	WorldCellSnakeMovingUp
 	WorldCellSnakeMovingRight
 	WorldCellSnakeMovingDown
@@ -17,6 +16,13 @@ const (
 	WorldCellWall
 	WorldCellFood
 )
+
+var SnakeWorldCellContents = []WorldCellContent{
+	WorldCellSnakeMovingUp,
+	WorldCellSnakeMovingRight,
+	WorldCellSnakeMovingDown,
+	WorldCellSnakeMovingLeft,
+}
 
 const (
 	SnakeMoveUp SnakeMovementDirection = iota
@@ -149,7 +155,7 @@ func updateHtmlWorld() {
 				fmt.Printf("Failed to get worldDiv: %s\n", err)
 				break
 			}
-			cell.Set("innerHTML", getCharByCellContent(world[y][x]))
+			cell.Set("className", getCellClasses(y, x))
 		}
 	}
 	bMessage, err := getElementById("message")
@@ -162,6 +168,76 @@ func updateHtmlWorld() {
 	} else {
 		bMessage.Set("innerHTML", fmt.Sprintf("GAME OVER! Score: %d", currentScore))
 	}
+}
+
+func isValidContentType(haystack []WorldCellContent, needle WorldCellContent) bool {
+	for _, a := range haystack {
+		if a == needle {
+			return true
+		}
+	}
+	return false
+}
+
+func getAround(value int, max int) []int {
+	var ret []int
+	if value > 1 {
+		ret = append(ret, value-1)
+	}
+	ret = append(ret, value)
+	if value < max-1 {
+		ret = append(ret, value+1)
+	}
+	return ret
+}
+
+func getXs(x int) []int {
+	return getAround(x, len(world[0]))
+}
+
+func getYs(y int) []int {
+	return getAround(y, len(world))
+}
+
+func getCellClasses(y, x int) string {
+	classes := "cell"
+	cell := world[y][x]
+	isNotOnTop := y > 0
+	isNotOnBottom := y < len(world)-1
+	isNotOnLeft := x > 0
+	isNotOnRight := x < len(world[0])-1
+	if isValidContentType(SnakeWorldCellContents, cell) {
+		classes += " snake"
+		if isNotOnTop && isValidContentType(SnakeWorldCellContents, world[y-1][x]) {
+			classes += " top"
+		}
+		if isNotOnBottom && isValidContentType(SnakeWorldCellContents, world[y+1][x]) {
+			classes += " bottom"
+		}
+		if isNotOnLeft && isValidContentType(SnakeWorldCellContents, world[y][x-1]) {
+			classes += " left"
+		}
+		if isNotOnRight && isValidContentType(SnakeWorldCellContents, world[y][x+1]) {
+			classes += " right"
+		}
+	} else if cell == WorldCellWall {
+		classes += " wall"
+		if !isNotOnTop || (isNotOnTop && world[y-1][x] == WorldCellWall) {
+			classes += " top"
+		}
+		if !isNotOnBottom || (isNotOnBottom && world[y+1][x] == WorldCellWall) {
+			classes += " bottom"
+		}
+		if !isNotOnLeft || (isNotOnLeft && world[y][x-1] == WorldCellWall) {
+			classes += " left"
+		}
+		if !isNotOnRight || (isNotOnRight && world[y][x+1] == WorldCellWall) {
+			classes += " right"
+		}
+	} else if cell == WorldCellFood {
+		classes += " food"
+	}
+	return classes
 }
 
 func getCharByCellContent(content WorldCellContent) string {

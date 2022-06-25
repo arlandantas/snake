@@ -1,10 +1,17 @@
+:root {
+    --snake-color: #0a0;
+    --wall-color: #aa0;
+    --food-color: #00a;
+    --cell-border: #aaa;
+}
+
 #world {
     display: flex;
     flex-direction: column;
     height: 500px;
     width: 500px;
     justify-content: center;
-    border: 1px solid red;
+    border: 1px solid var(--cell-border);
     padding: 2px;
 }
 
@@ -25,6 +32,38 @@
     flex-basis: 10px;
     flex-grow: 1;
     flex-shrink: 1;
-    border: 1px solid red;
     margin: 2px;
+    border-radius: 20%;
+    border: 1px solid transparent;
+}
+
+.cell:not(.snake):not(.wall):not(.food) {
+    border: 1px solid var(--cell-border) !important;
+}
+
+.cell.snake {
+    background: var(--snake-color);
+    border-radius: 50% !important;
+}
+
+.cell.wall {
+    background: var(--wall-color);
+}
+
+.cell.food {
+    background: var(--food-color);
+    border-radius: 50% !important;
+}
+
+.cell.left, .cell.top {
+    border-top-left-radius: 0 !important;
+}
+.cell.right, .cell.top {
+    border-top-right-radius: 0 !important;
+}
+.cell.right, .cell.bottom {
+    border-bottom-right-radius: 0 !important;
+}
+.cell.left, .cell.bottom {
+    border-bottom-left-radius: 0 !important;
 }

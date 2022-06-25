@@ -1,0 +1,29 @@
+#world {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    width: 500px;
+    justify-content: center;
+    border: 1px solid green;
+}
+
+#world .row {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 10px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: center;
+    border: 1px solid blue;
+}
+
+#world .row .cell {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 10px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    border: 1px solid red;
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"syscall/js"
 	"time"
 )
 
@@ -41,7 +42,22 @@ var currentSnakeTail = Position{y: 1, x: 2}
 var isSnakeAlive = true
 var currentScore = 0
 
-func start() {
+func loadStage() {
+	worldHtml := ""
+	for i := 0; i < WORLD_SIZE; i++ {
+		worldHtml += "<div class=\"row\">"
+		for j := 0; j < WORLD_SIZE; j++ {
+			world[i][j] = WorldCellEmpty
+			worldHtml += "<div class=\"cell\"></div>"
+		}
+		worldHtml += "</div>"
+		div, err := getElementById("world")
+		if err != "" {
+			fmt.Printf("Failed to get world div: %s\n", err)
+		} else {
+			div.Set("innerHTML", worldHtml)
+		}
+	}
 	currentSnakeHead = Position{y: 1, x: 2}
 	currentSnakeTail = Position{y: 1, x: 0}
 	world[1][0] = WorldCellSnakeMovingRight
@@ -85,7 +101,6 @@ func moveSnake() {
 	if currentSnakeHead.x < 0 || currentSnakeHead.x >= WORLD_SIZE ||
 		currentSnakeHead.y < 0 || currentSnakeHead.y >= WORLD_SIZE ||
 		world[currentSnakeHead.y][currentSnakeHead.x] == WorldCellWall {
-		fmt.Println("A cobra morreu!")
 		isSnakeAlive = false
 		return
 	}
@@ -103,50 +118,61 @@ func moveSnake() {
 			currentSnakeTail.y += 1
 		}
 	} else {
-		fmt.Println("A cobra se alimentou!")
 		currentScore++
 	}
 	world[currentSnakeHead.y][currentSnakeHead.x] = previousHeadDirection
 }
 
-func printWorld() {
-	fmt.Printf("Score: %d\n", currentScore)
-	fmt.Print("|")
+func printWorldString() {
+	content := fmt.Sprintf("Score: %d\n|", currentScore)
 	for i := 0; i < WORLD_SIZE; i++ {
-		fmt.Print("-")
+		content += "-"
 	}
-	fmt.Println("|")
+	content += "|\n"
 	for i := 0; i < len(world); i++ {
-		fmt.Print("|")
+		content += "|"
 		for j := 0; j < len(world[i]); j++ {
 			switch {
 			case world[i][j] == WorldCellSnakeMovingUp:
-				fmt.Print("^")
+				content += "^"
 			case world[i][j] == WorldCellSnakeMovingDown:
-				fmt.Print("v")
+				content += "v"
 			case world[i][j] == WorldCellSnakeMovingRight:
-				fmt.Print(">")
+				content += ">"
 			case world[i][j] == WorldCellSnakeMovingLeft:
-				fmt.Print("<")
+				content += "<"
 			case world[i][j] == WorldCellWall:
-				fmt.Print("X")
+				content += "X"
 			case world[i][j] == WorldCellFood:
-				fmt.Print("0")
+				content += "0"
 			default:
-				fmt.Print(" ")
+				content += " "
 			}
 		}
-		fmt.Println("|")
+		content += "|\n"
 	}
-	fmt.Print("|")
+	content += "|"
 	for i := 0; i < WORLD_SIZE; i++ {
-		fmt.Print("-")
+		content += "-"
 	}
-	fmt.Println("|")
+	content += "|\n"
+	fmt.Println(content)
 }
 
-func main() {
-	start()
+func updateHtmlWorld() {
+	div, err := getElementById("worldDiv")
+	if err != "" {
+		fmt.Printf("Failed to get worldDiv: %s\n", err)
+	} else {
+		div.Set("innerHTML", "Atualizado!!")
+	}
+}
+
+func printWorld() {
+	printWorldString()
+}
+
+func startGame() {
 	printWorld()
 	directions := []SnakeMovementDirection{
 		SnakeMoveRight,
@@ -169,4 +195,33 @@ func main() {
 		}
 	}
 	fmt.Println("Game Over")
+}
+
+func getElementById(elementId string) (js.Value, string) {
+	jsDoc := js.Global().Get("document")
+	if !jsDoc.Truthy() {
+		return js.Null(), "Document is invalid"
+	}
+	jsonElement := jsDoc.Call("getElementById", elementId)
+	if !jsonElement.Truthy() {
+		return js.Null(), "Element is invalid"
+	}
+	return jsonElement, ""
+}
+
+func exportJsFunctions() {
+	js.Global().Set("startGame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		startGame()
+		return true
+	}))
+	// js.Global().Set("getWorldString", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	// 	return getWorldString()
+	// }))
+}
+
+func main() {
+	loadStage()
+	exportJsFunctions()
+	printWorld()
+	<-make(chan bool)
 }

@@ -140,16 +140,20 @@ func getCellClasses(y, x int) string {
 		}
 	} else if isValidContentType(SnakeWorldCellContents, cell) {
 		classes += " snake"
-		if isNotOnTop && (world[y-1][x] == WorldCellSnakeMovingDown || cell == WorldCellSnakeMovingUp) {
+		if cell == WorldCellSnakeMovingUp || (isNotOnTop && world[y-1][x] == WorldCellSnakeMovingDown) ||
+			(!isNotOnTop && world[worldH-1][x] == WorldCellSnakeMovingDown) {
 			classes += " top"
 		}
-		if isNotOnBottom && (world[y+1][x] == WorldCellSnakeMovingUp || cell == WorldCellSnakeMovingDown) {
+		if cell == WorldCellSnakeMovingDown || (isNotOnBottom && world[y+1][x] == WorldCellSnakeMovingUp) ||
+			(!isNotOnBottom && world[0][x] == WorldCellSnakeMovingUp) {
 			classes += " bottom"
 		}
-		if isNotOnLeft && (world[y][x-1] == WorldCellSnakeMovingRight || cell == WorldCellSnakeMovingLeft) {
+		if cell == WorldCellSnakeMovingLeft || (isNotOnLeft && world[y][x-1] == WorldCellSnakeMovingRight) ||
+			(!isNotOnLeft && world[y][worldW-1] == WorldCellSnakeMovingRight) {
 			classes += " left"
 		}
-		if isNotOnRight && (world[y][x+1] == WorldCellSnakeMovingLeft || cell == WorldCellSnakeMovingRight) {
+		if cell == WorldCellSnakeMovingRight || (isNotOnRight && world[y][x+1] == WorldCellSnakeMovingLeft) ||
+			(!isNotOnRight && world[y][0] == WorldCellSnakeMovingLeft) {
 			classes += " right"
 		}
 	} else if cell == WorldCellWall {

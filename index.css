@@ -97,16 +97,16 @@ body {
     border-radius: 50% !important;
 }
 
-.cell.left, .cell.top {
+.cell.left, .cell.top, #world .cell.boundary:first-child, #world .row.boundary:first-child .cell {
     border-top-left-radius: 0 !important;
 }
-.cell.right, .cell.top {
+.cell.right, .cell.top, #world .cell.boundary:last-child, #world .row.boundary:first-child .cell {
     border-top-right-radius: 0 !important;
 }
-.cell.right, .cell.bottom {
+.cell.right, .cell.bottom, #world .cell.boundary:last-child, #world .row.boundary:last-child .cell {
     border-bottom-right-radius: 0 !important;
 }
-.cell.left, .cell.bottom {
+.cell.left, .cell.bottom, #world .cell.boundary:first-child, #world .row.boundary:last-child .cell {
     border-bottom-left-radius: 0 !important;
 }
 

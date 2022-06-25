@@ -42,6 +42,7 @@ var isSnakeAlive = true
 var currentScore = 0
 var tickIntervalId = 0
 var skipNextTickMove = false
+var currentStageIndex = 0
 var currentStage Stage
 var randomSource = rand.New(rand.NewSource(time.Now().Unix()))
 
@@ -82,17 +83,30 @@ func moveSnake(userInput bool) {
 	switch previousHeadDirection {
 	case WorldCellSnakeMovingRight:
 		newX += 1
+		if !currentStage.boundary && newX == worldW {
+			newX = 0
+		}
 	case WorldCellSnakeMovingLeft:
 		newX -= 1
+		if !currentStage.boundary && newX == -1 {
+			newX = worldW - 1
+		}
 	case WorldCellSnakeMovingUp:
 		newY -= 1
+		if !currentStage.boundary && newY == -1 {
+			newY = worldH - 1
+		}
 	case WorldCellSnakeMovingDown:
 		newY += 1
+		if !currentStage.boundary && newY == worldH {
+			newY = 0
+		}
 	}
 	if newX < 0 || newX >= worldW ||
 		newY < 0 || newY >= worldH ||
 		(world[newY][newX] != WorldCellEmpty &&
-			world[newY][newX] != WorldCellFood) {
+			world[newY][newX] != WorldCellFood &&
+			(currentSnakeTail.x != newX || currentSnakeTail.y != newY)) {
 		isSnakeAlive = false
 		return
 	}
@@ -103,12 +117,24 @@ func moveSnake(userInput bool) {
 		switch previousTailDirection {
 		case WorldCellSnakeMovingRight:
 			currentSnakeTail.x += 1
+			if !currentStage.boundary && currentSnakeTail.x == worldW {
+				currentSnakeTail.x = 0
+			}
 		case WorldCellSnakeMovingLeft:
 			currentSnakeTail.x -= 1
+			if !currentStage.boundary && currentSnakeTail.x == -1 {
+				currentSnakeTail.x = worldW - 1
+			}
 		case WorldCellSnakeMovingUp:
 			currentSnakeTail.y -= 1
+			if !currentStage.boundary && currentSnakeTail.y == -1 {
+				currentSnakeTail.y = worldH - 1
+			}
 		case WorldCellSnakeMovingDown:
 			currentSnakeTail.y += 1
+			if !currentStage.boundary && currentSnakeTail.y == worldH {
+				currentSnakeTail.y = 0
+			}
 		}
 	} else {
 		createFood()
@@ -147,7 +173,7 @@ func startGame() {
 		fmt.Println("starting game...")
 		isSnakeAlive = true
 		currentScore = 0
-		loadStage(1)
+		loadStage(currentStageIndex)
 		createFood()
 		printWorld()
 		intervalId, err := setInterval("tickGame", 500)

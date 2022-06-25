@@ -89,10 +89,11 @@ func updateHtmlWorld() {
 		fmt.Printf("Failed to get bMessage: %s\n", err)
 		return
 	}
+	scoreText := fmt.Sprintf("Score: %d", currentScore)
 	if isSnakeAlive {
-		bMessage.Set("innerHTML", fmt.Sprintf("Score: %d", currentScore))
+		bMessage.Set("innerHTML", scoreText)
 	} else {
-		bMessage.Set("innerHTML", fmt.Sprintf("GAME OVER! Score: %d", currentScore))
+		bMessage.Set("innerHTML", fmt.Sprintf("GAME OVER! %s", scoreText))
 	}
 }
 

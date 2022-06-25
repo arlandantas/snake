@@ -61,7 +61,7 @@ func initilizeHandlers() {
 func main() {
 	exportJsFunctions()
 	initilizeHandlers()
-	loadStage(1)
+	loadStage(currentStageIndex)
 	printWorld()
 	<-make(chan bool)
 }

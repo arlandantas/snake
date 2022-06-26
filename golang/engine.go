@@ -27,12 +27,12 @@ var world [][]WorldCellContent
 var worldW = 0
 var worldH = 0
 var currentSpeed = 0
-var gameRunning = false
+var currentSnakeHeadDirection = WorldCellEmpty
 var currentSnakeHead = Position{y: 0, x: 0}
 var currentSnakeTail = Position{y: 0, x: 0}
-var isSnakeAlive = true
+var isSnakeAlive = false
 var currentScore = 0
-var skipNextTickMove = false
+var timeoutId = 0
 var currentStageIndex = 0
 var currentStage Stage
 var randomSource = rand.New(rand.NewSource(time.Now().Unix()))
@@ -42,28 +42,33 @@ func loadStage(stageIndex int) {
 	world = currentStage.initialWorld
 	worldH = len(world)
 	worldW = len(world[0])
-	currentSnakeHead = currentStage.initialSnakeHead
 	currentSnakeTail = currentStage.initialSnakeTail
+	currentSnakeHead = currentStage.initialSnakeHead
+	currentSnakeHeadDirection = world[currentSnakeHead.y][currentSnakeHead.x]
 	currentSpeed = currentStage.initialSpeed
 	renderInitialWorld()
 }
 
 func setSnakeHeadDirection(direction WorldCellContent) {
+	if !isSnakeAlive {
+		return
+	}
 	currentDirection := world[currentSnakeHead.y][currentSnakeHead.x]
 	moved := false
 	if direction == currentDirection {
-		moveSnake(true)
+		clearTickTimeout()
+		tick()
 		printWorld()
-	} else if direction == WorldCellSnakeMovingUp && currentDirection != WorldCellSnakeMovingDown {
+	} else if direction == WorldCellSnakeMovingUp && currentSnakeHeadDirection != WorldCellSnakeMovingDown {
 		currentDirection = WorldCellSnakeMovingUp
 		moved = true
-	} else if direction == WorldCellSnakeMovingRight && currentDirection != WorldCellSnakeMovingLeft {
+	} else if direction == WorldCellSnakeMovingRight && currentSnakeHeadDirection != WorldCellSnakeMovingLeft {
 		currentDirection = WorldCellSnakeMovingRight
 		moved = true
-	} else if direction == WorldCellSnakeMovingDown && currentDirection != WorldCellSnakeMovingUp {
+	} else if direction == WorldCellSnakeMovingDown && currentSnakeHeadDirection != WorldCellSnakeMovingUp {
 		currentDirection = WorldCellSnakeMovingDown
 		moved = true
-	} else if direction == WorldCellSnakeMovingLeft && currentDirection != WorldCellSnakeMovingRight {
+	} else if direction == WorldCellSnakeMovingLeft && currentSnakeHeadDirection != WorldCellSnakeMovingRight {
 		currentDirection = WorldCellSnakeMovingLeft
 		moved = true
 	}
@@ -73,8 +78,8 @@ func setSnakeHeadDirection(direction WorldCellContent) {
 	}
 }
 
-func moveSnake(userInput bool) {
-	if !gameRunning {
+func moveSnake() {
+	if !isSnakeAlive {
 		return
 	}
 	previousHeadDirection := world[currentSnakeHead.y][currentSnakeHead.x]
@@ -142,24 +147,25 @@ func moveSnake(userInput bool) {
 		}
 		currentScore++
 	}
+	currentSnakeHeadDirection = previousHeadDirection
 	world[currentSnakeHead.y][currentSnakeHead.x] = previousHeadDirection
-	skipNextTickMove = userInput
+	printWorld()
 }
 
-func tick() bool {
-	if !skipNextTickMove {
-		moveSnake(false)
-	}
-	skipNextTickMove = false
-	printWorld()
-	gameRunning = isSnakeAlive
-	if gameRunning {
-		_, err := setTimeout("tickGame", currentSpeed)
+func clearTickTimeout() {
+	clearTimeout(timeoutId)
+	timeoutId = 0
+}
+
+func tick() {
+	moveSnake()
+	if isSnakeAlive {
+		generatedTimeoutId, err := setTimeout("tickGame", currentSpeed)
 		if err != nil {
 			fmt.Printf("Failed to set interval! %s\n", err)
 		}
+		timeoutId = generatedTimeoutId
 	}
-	return isSnakeAlive
 }
 
 func createFood() {
@@ -173,9 +179,8 @@ func createFood() {
 }
 
 func startGame() {
-	if !gameRunning {
+	if !isSnakeAlive {
 		fmt.Println("starting game...")
-		gameRunning = true
 		isSnakeAlive = true
 		currentScore = 0
 		loadStage(currentStageIndex)

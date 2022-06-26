@@ -37,6 +37,10 @@ func setTimeout(functionName string, interval int) (int, error) {
 	return timeoutId.Int(), nil
 }
 
+func clearTimeout(timeoutId int) {
+	js.Global().Call("clearTimeout", timeoutId)
+}
+
 func setInterval(functionName string, interval int) (int, error) {
 	intervalId := js.Global().Call("setInterval", js.Global().Get(functionName), interval)
 	if !intervalId.Truthy() {

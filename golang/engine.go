@@ -163,7 +163,6 @@ func tick() bool {
 }
 
 func createFood() {
-	randomSource = rand.New(rand.NewSource(time.Now().Unix()))
 	y := randomSource.Intn(worldH)
 	x := randomSource.Intn(worldW)
 	if world[y][x] == WorldCellEmpty {
@@ -180,6 +179,7 @@ func startGame() {
 		isSnakeAlive = true
 		currentScore = 0
 		loadStage(currentStageIndex)
+		randomSource = rand.New(rand.NewSource(time.Now().Unix()))
 		createFood()
 		printWorld()
 		tick()

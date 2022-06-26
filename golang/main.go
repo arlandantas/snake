@@ -49,27 +49,31 @@ func exportJsFunctions() {
 }
 
 func initilizeHandlers() {
-	jsDoc, err := getDocument()
-	if err == nil {
-		jsDoc.Set("onkeypress", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-			keyCode := args[0].Get("charCode").Int()
-			if keyCode == 97 || keyCode == 119 || keyCode == 115 || keyCode == 100 {
-				switch keyCode {
-				case 97:
-					setSnakeHeadDirection(WorldCellSnakeMovingLeft)
-				case 119:
-					setSnakeHeadDirection(WorldCellSnakeMovingUp)
-				case 115:
-					setSnakeHeadDirection(WorldCellSnakeMovingDown)
-				case 100:
-					setSnakeHeadDirection(WorldCellSnakeMovingRight)
-				}
+	js.Global().Set("onkeyup", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		keyCode := args[0].Get("keyCode").Int()
+		if keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40 ||
+			keyCode == 65 || keyCode == 87 || keyCode == 83 || keyCode == 68 {
+			switch keyCode {
+			case 37:
+				setSnakeHeadDirection(WorldCellSnakeMovingLeft)
+			case 65:
+				setSnakeHeadDirection(WorldCellSnakeMovingLeft)
+			case 38:
+				setSnakeHeadDirection(WorldCellSnakeMovingUp)
+			case 87:
+				setSnakeHeadDirection(WorldCellSnakeMovingUp)
+			case 40:
+				setSnakeHeadDirection(WorldCellSnakeMovingDown)
+			case 83:
+				setSnakeHeadDirection(WorldCellSnakeMovingDown)
+			case 39:
+				setSnakeHeadDirection(WorldCellSnakeMovingRight)
+			case 68:
+				setSnakeHeadDirection(WorldCellSnakeMovingRight)
 			}
-			return true
-		}))
-	} else {
-		fmt.Printf("Failed to get document: %s\n", err)
-	}
+		}
+		return true
+	}))
 }
 
 func main() {

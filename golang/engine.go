@@ -189,53 +189,23 @@ func createFood() {
 func resumeGame() {
 	isPaused = false
 	tick()
-	resumeBt, err := getElementById("bt_resume")
-	if err != nil {
-		fmt.Printf("Failed to get resume bt %s", err)
-	} else {
-		resumeBt.Get("style").Set("display", "none")
-	}
-	pauseBt, err := getElementById("bt_pause")
-	if err != nil {
-		fmt.Printf("Failed to get pauseBt div %s", err)
-	} else {
-		pauseBt.Get("style").Set("display", "")
-	}
+	setElementDisplay("bt_resume", "none")
+	setElementDisplay("bt_pause", "")
 }
 
 func pauseGame() {
 	isPaused = true
 	clearTickTimeout()
-	resumeBt, err := getElementById("bt_resume")
-	if err != nil {
-		fmt.Printf("Failed to get resume bt %s", err)
-	} else {
-		resumeBt.Get("style").Set("display", "")
-	}
-	pauseBt, err := getElementById("bt_pause")
-	if err != nil {
-		fmt.Printf("Failed to get pauseBt div %s", err)
-	} else {
-		pauseBt.Get("style").Set("display", "none")
-	}
+	setElementDisplay("bt_resume", "")
+	setElementDisplay("bt_pause", "none")
 }
 
 func giveup() {
 	isSnakeAlive = false
 	clearTickTimeout()
 	printWorld()
-	startDiv, err := getElementById("start_game")
-	if err != nil {
-		fmt.Printf("Failed to get startGame div %s", err)
-	} else {
-		startDiv.Get("style").Set("display", "")
-	}
-	stopDiv, err := getElementById("stop_game")
-	if err != nil {
-		fmt.Printf("Failed to get stopGame div %s", err)
-	} else {
-		stopDiv.Get("style").Set("display", "none")
-	}
+	setElementDisplay("start_game", "")
+	setElementDisplay("stop_game", "none")
 }
 
 func startGame(stage int) {
@@ -249,17 +219,7 @@ func startGame(stage int) {
 		createFood()
 		printWorld()
 		tick()
-		startDiv, err := getElementById("start_game")
-		if err != nil {
-			fmt.Printf("Failed to get startGame div %s", err)
-		} else {
-			startDiv.Get("style").Set("display", "none")
-		}
-		stopDiv, err := getElementById("stop_game")
-		if err != nil {
-			fmt.Printf("Failed to get stopGame div %s", err)
-		} else {
-			stopDiv.Get("style").Set("display", "")
-		}
+		setElementDisplay("start_game", "none")
+		setElementDisplay("stop_game", "")
 	}
 }

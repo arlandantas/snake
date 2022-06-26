@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"syscall/js"
 )
 
@@ -27,6 +28,16 @@ func querySelector(selector string) (js.Value, error) {
 
 func getElementById(elementId string) (js.Value, error) {
 	return querySelector("#" + elementId)
+}
+
+func setElementDisplay(elementId, display string) bool {
+	elmt, err := getElementById(elementId)
+	if err != nil {
+		fmt.Printf("Failed to get elment %s %s", elementId, err)
+		return false
+	}
+	elmt.Get("style").Set("display", display)
+	return true
 }
 
 func setTimeout(functionName string, interval int) (int, error) {

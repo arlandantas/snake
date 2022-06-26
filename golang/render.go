@@ -94,6 +94,8 @@ func printWorld(ignoreGameOver ...bool) {
 		bMessage.Set("innerHTML", scoreText)
 	} else {
 		bMessage.Set("innerHTML", fmt.Sprintf("GAME OVER! %s", scoreText))
+		setElementDisplay("start_game", "")
+		setElementDisplay("stop_game", "none")
 	}
 }
 

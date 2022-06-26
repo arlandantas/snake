@@ -122,9 +122,18 @@ body {
 }
 
 #arrow_buttons button {
-    border: 1px solid #500;
-    font-weight: bold;
     flex-grow: 1;
     height: 50px;
     margin: 10px;
+}
+
+button {
+    border: 1px solid #500;
+    font-weight: bold;
+    border-radius: 0;
+    padding: .5em 1em;
+}
+
+#start_game, #stop_game {
+    margin: 1em 0;
 }

@@ -31,6 +31,7 @@ var currentSnakeHeadDirection = WorldCellEmpty
 var currentSnakeHead = Position{y: 0, x: 0}
 var currentSnakeTail = Position{y: 0, x: 0}
 var isSnakeAlive = false
+var isPaused = false
 var currentScore = 0
 var timeoutId = 0
 var currentStageIndex = 0
@@ -39,9 +40,15 @@ var randomSource = rand.New(rand.NewSource(time.Now().Unix()))
 
 func loadStage(stageIndex int) {
 	currentStage = stages[stageIndex]
-	world = currentStage.initialWorld
-	worldH = len(world)
-	worldW = len(world[0])
+	worldH = len(currentStage.initialWorld)
+	worldW = len(currentStage.initialWorld[0])
+	world = make([][]WorldCellContent, worldH)
+	for i := 0; i < worldH; i++ {
+		world[i] = make([]WorldCellContent, worldW)
+		for j := range world[i] {
+			world[i][j] = currentStage.initialWorld[i][j]
+		}
+	}
 	currentSnakeTail = currentStage.initialSnakeTail
 	currentSnakeHead = currentStage.initialSnakeHead
 	currentSnakeHeadDirection = world[currentSnakeHead.y][currentSnakeHead.x]
@@ -51,7 +58,7 @@ func loadStage(stageIndex int) {
 }
 
 func setSnakeHeadDirection(direction WorldCellContent) {
-	if !isSnakeAlive {
+	if !isSnakeAlive || isPaused {
 		return
 	}
 	currentDirection := world[currentSnakeHead.y][currentSnakeHead.x]
@@ -79,7 +86,7 @@ func setSnakeHeadDirection(direction WorldCellContent) {
 }
 
 func moveSnake() {
-	if !isSnakeAlive {
+	if !isSnakeAlive || isPaused {
 		return
 	}
 	previousHeadDirection := world[currentSnakeHead.y][currentSnakeHead.x]
@@ -179,8 +186,61 @@ func createFood() {
 	createFood()
 }
 
+func resumeGame() {
+	isPaused = false
+	tick()
+	resumeBt, err := getElementById("bt_resume")
+	if err != nil {
+		fmt.Printf("Failed to get resume bt %s", err)
+	} else {
+		resumeBt.Get("style").Set("display", "none")
+	}
+	pauseBt, err := getElementById("bt_pause")
+	if err != nil {
+		fmt.Printf("Failed to get pauseBt div %s", err)
+	} else {
+		pauseBt.Get("style").Set("display", "")
+	}
+}
+
+func pauseGame() {
+	isPaused = true
+	clearTickTimeout()
+	resumeBt, err := getElementById("bt_resume")
+	if err != nil {
+		fmt.Printf("Failed to get resume bt %s", err)
+	} else {
+		resumeBt.Get("style").Set("display", "")
+	}
+	pauseBt, err := getElementById("bt_pause")
+	if err != nil {
+		fmt.Printf("Failed to get pauseBt div %s", err)
+	} else {
+		pauseBt.Get("style").Set("display", "none")
+	}
+}
+
+func giveup() {
+	isSnakeAlive = false
+	clearTickTimeout()
+	printWorld()
+	startDiv, err := getElementById("start_game")
+	if err != nil {
+		fmt.Printf("Failed to get startGame div %s", err)
+	} else {
+		startDiv.Get("style").Set("display", "")
+	}
+	stopDiv, err := getElementById("stop_game")
+	if err != nil {
+		fmt.Printf("Failed to get stopGame div %s", err)
+	} else {
+		stopDiv.Get("style").Set("display", "none")
+	}
+}
+
 func startGame(stage int) {
 	if !isSnakeAlive {
+		isPaused = false
 		currentStageIndex = stage
 		loadStage(currentStageIndex)
 		isSnakeAlive = true
@@ -189,11 +249,17 @@ func startGame(stage int) {
 		createFood()
 		printWorld()
 		tick()
-		startBtn, err := getElementById("start_game")
+		startDiv, err := getElementById("start_game")
 		if err != nil {
-			fmt.Printf("Failed to get startGame button %s", err)
+			fmt.Printf("Failed to get startGame div %s", err)
 		} else {
-			startBtn.Get("style").Set("display", "none")
+			startDiv.Get("style").Set("display", "none")
+		}
+		stopDiv, err := getElementById("stop_game")
+		if err != nil {
+			fmt.Printf("Failed to get stopGame div %s", err)
+		} else {
+			stopDiv.Get("style").Set("display", "")
 		}
 	}
 }

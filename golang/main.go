@@ -14,6 +14,18 @@ func exportJsFunctions() {
 		startGame(args[0].Int())
 		return true
 	}))
+	js.Global().Set("giveup", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		giveup()
+		return true
+	}))
+	js.Global().Set("pauseGame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		pauseGame()
+		return true
+	}))
+	js.Global().Set("resumeGame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		resumeGame()
+		return true
+	}))
 	js.Global().Set("tickGame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		tick()
 		return true
@@ -63,6 +75,6 @@ func initilizeHandlers() {
 func main() {
 	exportJsFunctions()
 	initilizeHandlers()
-	loadStage(currentStageIndex)
+	loadStage(0)
 	<-make(chan bool)
 }

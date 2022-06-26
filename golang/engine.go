@@ -179,12 +179,12 @@ func createFood() {
 	createFood()
 }
 
-func startGame() {
+func startGame(stage int) {
 	if !isSnakeAlive {
-		fmt.Println("starting game...")
+		currentStageIndex = stage
+		loadStage(currentStageIndex)
 		isSnakeAlive = true
 		currentScore = 0
-		loadStage(currentStageIndex)
 		randomSource = rand.New(rand.NewSource(time.Now().Unix()))
 		createFood()
 		printWorld()

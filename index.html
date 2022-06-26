@@ -11,8 +11,9 @@
 </head>
 <body>
     <h1>Snake WASM</h1>
-    <div>
-        <button onclick="startGame()" id="start_game">Iniciar Jogo</button>
+    <div id="start_game">
+        <button onclick="startGame(0)">Jogar fase 1</button>
+        <button onclick="startGame(1)">Jogar fase 2</button>
     </div>
     <b id="message"></b>
     <div id="world"></div>
@@ -22,7 +23,7 @@
         <button onclick="clickUp()"><img src="./arrow.svg" width="15"></button>
         <button onclick="clickDown()"><img src="./arrow.svg" width="15" style="transform: rotate(180deg);"></button>
     </div>
-    <div>v. 0.1</div>
+    <div>v. 0.2</div>
     <div id="credits">
         Feito com ❤️ por
         <a href="https://arlandantas.github.io" target="_blank" rel="noopener noreferrer"

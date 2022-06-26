@@ -7,7 +7,11 @@ import (
 
 func exportJsFunctions() {
 	js.Global().Set("startGame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		startGame()
+		if len(args) == 0 {
+			fmt.Println("You must choose a stage to play!")
+			return false
+		}
+		startGame(args[0].Int())
 		return true
 	}))
 	js.Global().Set("tickGame", js.FuncOf(func(this js.Value, args []js.Value) interface{} {

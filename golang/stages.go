@@ -54,7 +54,7 @@ var stages = []Stage{
 				"  >>>     \n" +
 				"          \n" +
 				"          \n" +
-				"XXXXX     \n" +
+				"   XXXX   \n" +
 				"          \n" +
 				"          \n" +
 				"          \n" +

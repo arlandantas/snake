@@ -7,7 +7,6 @@ import (
 )
 
 type WorldCellContent int
-type SnakeMovementDirection int
 
 const (
 	WorldCellEmpty WorldCellContent = iota
@@ -17,13 +16,6 @@ const (
 	WorldCellSnakeMovingLeft
 	WorldCellWall
 	WorldCellFood
-)
-
-const (
-	SnakeMoveUp SnakeMovementDirection = iota
-	SnakeMoveRight
-	SnakeMoveDown
-	SnakeMoveLeft
 )
 
 type Position struct {
@@ -36,7 +28,6 @@ var worldW = 0
 var worldH = 0
 var currentSpeed = 0
 var gameRunning = false
-var currentSnakeDirection = SnakeMoveRight
 var currentSnakeHead = Position{y: 0, x: 0}
 var currentSnakeTail = Position{y: 0, x: 0}
 var isSnakeAlive = true
@@ -57,25 +48,27 @@ func loadStage(stageIndex int) {
 	renderInitialWorld()
 }
 
-func setSnakeHeadDirection(direction SnakeMovementDirection) {
+func setSnakeHeadDirection(direction WorldCellContent) {
 	currentDirection := world[currentSnakeHead.y][currentSnakeHead.x]
 	moved := false
-	if direction == SnakeMoveUp && currentDirection != WorldCellSnakeMovingDown {
+	if direction == currentDirection {
+		moveSnake(true)
+		printWorld()
+	} else if direction == WorldCellSnakeMovingUp && currentDirection != WorldCellSnakeMovingDown {
 		currentDirection = WorldCellSnakeMovingUp
 		moved = true
-	} else if direction == SnakeMoveRight && currentDirection != WorldCellSnakeMovingLeft {
+	} else if direction == WorldCellSnakeMovingRight && currentDirection != WorldCellSnakeMovingLeft {
 		currentDirection = WorldCellSnakeMovingRight
 		moved = true
-	} else if direction == SnakeMoveDown && currentDirection != WorldCellSnakeMovingUp {
+	} else if direction == WorldCellSnakeMovingDown && currentDirection != WorldCellSnakeMovingUp {
 		currentDirection = WorldCellSnakeMovingDown
 		moved = true
-	} else if direction == SnakeMoveLeft && currentDirection != WorldCellSnakeMovingRight {
+	} else if direction == WorldCellSnakeMovingLeft && currentDirection != WorldCellSnakeMovingRight {
 		currentDirection = WorldCellSnakeMovingLeft
 		moved = true
 	}
 	if moved {
 		world[currentSnakeHead.y][currentSnakeHead.x] = currentDirection
-		moveSnake(true)
 		printWorld()
 	}
 }

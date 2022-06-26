@@ -15,19 +15,19 @@ func exportJsFunctions() {
 		return true
 	}))
 	js.Global().Set("clickUp", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		setSnakeHeadDirection(SnakeMoveUp)
+		setSnakeHeadDirection(WorldCellSnakeMovingUp)
 		return true
 	}))
 	js.Global().Set("clickDown", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		setSnakeHeadDirection(SnakeMoveDown)
+		setSnakeHeadDirection(WorldCellSnakeMovingDown)
 		return true
 	}))
 	js.Global().Set("clickLeft", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		setSnakeHeadDirection(SnakeMoveLeft)
+		setSnakeHeadDirection(WorldCellSnakeMovingLeft)
 		return true
 	}))
 	js.Global().Set("clickRight", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		setSnakeHeadDirection(SnakeMoveRight)
+		setSnakeHeadDirection(WorldCellSnakeMovingRight)
 		return true
 	}))
 }
@@ -40,13 +40,13 @@ func initilizeHandlers() {
 			if keyCode == 97 || keyCode == 119 || keyCode == 115 || keyCode == 100 {
 				switch keyCode {
 				case 97:
-					setSnakeHeadDirection(SnakeMoveLeft)
+					setSnakeHeadDirection(WorldCellSnakeMovingLeft)
 				case 119:
-					setSnakeHeadDirection(SnakeMoveUp)
+					setSnakeHeadDirection(WorldCellSnakeMovingUp)
 				case 115:
-					setSnakeHeadDirection(SnakeMoveDown)
+					setSnakeHeadDirection(WorldCellSnakeMovingDown)
 				case 100:
-					setSnakeHeadDirection(SnakeMoveRight)
+					setSnakeHeadDirection(WorldCellSnakeMovingRight)
 				}
 			}
 			return true

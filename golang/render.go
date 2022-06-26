@@ -73,7 +73,7 @@ func getCellId(y, x int) string {
 	return fmt.Sprintf("cell%d%d", y, x)
 }
 
-func updateHtmlWorld() {
+func printWorld(ignoreGameOver ...bool) {
 	for y := range world {
 		for x := range world[y] {
 			cell, err := getElementById(getCellId(y, x))
@@ -90,7 +90,7 @@ func updateHtmlWorld() {
 		return
 	}
 	scoreText := fmt.Sprintf("Score: %d", currentScore)
-	if isSnakeAlive {
+	if isSnakeAlive || (len(ignoreGameOver) > 0 && ignoreGameOver[0]) {
 		bMessage.Set("innerHTML", scoreText)
 	} else {
 		bMessage.Set("innerHTML", fmt.Sprintf("GAME OVER! %s", scoreText))
@@ -212,9 +212,4 @@ func getCellContentByChar(char string) WorldCellContent {
 	default:
 		return WorldCellEmpty
 	}
-}
-
-func printWorld() {
-	// printWorldString()
-	updateHtmlWorld()
 }

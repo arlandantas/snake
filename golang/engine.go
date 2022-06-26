@@ -47,6 +47,7 @@ func loadStage(stageIndex int) {
 	currentSnakeHeadDirection = world[currentSnakeHead.y][currentSnakeHead.x]
 	currentSpeed = currentStage.initialSpeed
 	renderInitialWorld()
+	printWorld(true)
 }
 
 func setSnakeHeadDirection(direction WorldCellContent) {
@@ -58,7 +59,6 @@ func setSnakeHeadDirection(direction WorldCellContent) {
 	if direction == currentDirection {
 		clearTickTimeout()
 		tick()
-		printWorld()
 	} else if direction == WorldCellSnakeMovingUp && currentSnakeHeadDirection != WorldCellSnakeMovingDown {
 		currentDirection = WorldCellSnakeMovingUp
 		moved = true
@@ -159,6 +159,7 @@ func clearTickTimeout() {
 
 func tick() {
 	moveSnake()
+	printWorld()
 	if isSnakeAlive {
 		generatedTimeoutId, err := setTimeout("tickGame", currentSpeed)
 		if err != nil {

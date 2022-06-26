@@ -26,7 +26,7 @@ func renderInitialWorld() {
 			worldHtml += "<div class=\"cell boundary\"></div>"
 		}
 		for j := range world[i] {
-			worldHtml += fmt.Sprintf("<div class=\"cell\" id=\"cell%d%d\"></div>", i, j)
+			worldHtml += fmt.Sprintf("<div class=\"cell\" id=\"%s\"></div>", getCellId(i, j))
 		}
 		if currentStage.boundary {
 			worldHtml += "<div class=\"cell boundary\"></div>"
@@ -70,15 +70,16 @@ func printWorldString() {
 }
 
 func getCellId(y, x int) string {
-	return fmt.Sprintf("cell%d%d", y, x)
+	return fmt.Sprintf("cell-%d-%d", y, x)
 }
 
 func printWorld(ignoreGameOver ...bool) {
+	fmt.Printf("%o | %o\n", currentSnakeHead, currentSnakeTail)
 	for y := range world {
 		for x := range world[y] {
 			cell, err := getElementById(getCellId(y, x))
 			if err != nil {
-				fmt.Printf("Failed to get worldDiv: %s\n", err)
+				fmt.Printf("Failed to get cellDiv: %s\n", err)
 				break
 			}
 			cell.Set("className", getCellClasses(y, x))

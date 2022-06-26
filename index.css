@@ -85,8 +85,8 @@ body {
 }
 .cell.snake.head::before {
     content: ' ';
-    height: 10px;
-    width: 10px;
+    height: 30%;
+    width: 30%;
     background-color: var(--snake-eye-color);
     border-radius: 50%;
 }
@@ -95,9 +95,12 @@ body {
     background: var(--wall-color);
 }
 
-.cell.food {
+.cell.food::before {
+    content: ' ';
+    height: 80%;
+    width: 80%;
     background: var(--food-color);
-    border-radius: 50% !important;
+    border-radius: 50%;
 }
 
 .cell.left, .cell.top, #world .cell.boundary:first-child, #world .row.boundary:first-child .cell {

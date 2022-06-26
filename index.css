@@ -73,6 +73,7 @@ body {
     margin: 2px;
     border-radius: 20%;
     border: 1px solid transparent;
+    position: relative;
 }
 
 .cell:not(.snake):not(.wall):not(.food) {
@@ -89,6 +90,38 @@ body {
     width: 30%;
     background-color: var(--snake-eye-color);
     border-radius: 50%;
+}
+.cell.snake.head.tongue::after{
+    content: '';
+    position: absolute;
+    width: 20%;
+    height: 20%;
+    background-color: var(--snake-eye-color);
+    clear: both;
+}
+.cell.snake.head.tongue.top::after {
+    left: 40%;
+    top: 100%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+.cell.snake.head.tongue.bottom::after {
+    left: 40%;
+    top: -20%;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+}
+.cell.snake.head.tongue.left::after {
+    left: 100%;
+    top: 40%;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+.cell.snake.head.tongue.right::after {
+    left: -20%;
+    top: 40%;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
 }
 
 .cell.wall {

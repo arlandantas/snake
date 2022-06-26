@@ -112,21 +112,37 @@ func getCellClasses(y, x int) string {
 	classes := "cell"
 	cell := world[y][x]
 	cellPosition := Position{x, y}
-	isNotOnTop := y > 0
-	isNotOnBottom := y < worldH-1
-	isNotOnLeft := x > 0
-	isNotOnRight := x < worldW-1
+	isOnTop := y == 0
+	isOnBottom := y == worldH-1
+	isOnLeft := x == 0
+	isOnRight := x == worldW-1
 	if currentSnakeHead == cellPosition {
 		classes += " snake  head"
 		switch cell {
 		case WorldCellSnakeMovingUp:
 			classes += " bottom"
+			if (!isOnTop && world[y-1][x] == WorldCellFood) ||
+				(isOnTop && !currentStage.boundary && world[worldH-1][x] == WorldCellFood) {
+				classes += " tongue"
+			}
 		case WorldCellSnakeMovingDown:
 			classes += " top"
+			if (!isOnBottom && world[y+1][x] == WorldCellFood) ||
+				(isOnBottom && !currentStage.boundary && world[0][x] == WorldCellFood) {
+				classes += " tongue"
+			}
 		case WorldCellSnakeMovingRight:
 			classes += " left"
+			if (!isOnRight && world[y][x+1] == WorldCellFood) ||
+				(isOnRight && !currentStage.boundary && world[y][0] == WorldCellFood) {
+				classes += " tongue"
+			}
 		case WorldCellSnakeMovingLeft:
 			classes += " right"
+			if (!isOnLeft && world[y][x-1] == WorldCellFood) ||
+				(isOnLeft && !currentStage.boundary && world[y][worldW-1] == WorldCellFood) {
+				classes += " tongue"
+			}
 		}
 	} else if currentSnakeTail == cellPosition {
 		classes += " snake"
@@ -142,34 +158,34 @@ func getCellClasses(y, x int) string {
 		}
 	} else if isValidContentType(SnakeWorldCellContents, cell) {
 		classes += " snake"
-		if cell == WorldCellSnakeMovingUp || (isNotOnTop && world[y-1][x] == WorldCellSnakeMovingDown) ||
-			(!isNotOnTop && !currentStage.boundary && world[worldH-1][x] == WorldCellSnakeMovingDown) {
+		if cell == WorldCellSnakeMovingUp || (!isOnTop && world[y-1][x] == WorldCellSnakeMovingDown) ||
+			(isOnTop && !currentStage.boundary && world[worldH-1][x] == WorldCellSnakeMovingDown) {
 			classes += " top"
 		}
-		if cell == WorldCellSnakeMovingDown || (isNotOnBottom && world[y+1][x] == WorldCellSnakeMovingUp) ||
-			(!isNotOnBottom && !currentStage.boundary && world[0][x] == WorldCellSnakeMovingUp) {
+		if cell == WorldCellSnakeMovingDown || (!isOnBottom && world[y+1][x] == WorldCellSnakeMovingUp) ||
+			(isOnBottom && !currentStage.boundary && world[0][x] == WorldCellSnakeMovingUp) {
 			classes += " bottom"
 		}
-		if cell == WorldCellSnakeMovingLeft || (isNotOnLeft && world[y][x-1] == WorldCellSnakeMovingRight) ||
-			(!isNotOnLeft && !currentStage.boundary && world[y][worldW-1] == WorldCellSnakeMovingRight) {
+		if cell == WorldCellSnakeMovingLeft || (!isOnLeft && world[y][x-1] == WorldCellSnakeMovingRight) ||
+			(isOnLeft && !currentStage.boundary && world[y][worldW-1] == WorldCellSnakeMovingRight) {
 			classes += " left"
 		}
-		if cell == WorldCellSnakeMovingRight || (isNotOnRight && world[y][x+1] == WorldCellSnakeMovingLeft) ||
-			(!isNotOnRight && !currentStage.boundary && world[y][0] == WorldCellSnakeMovingLeft) {
+		if cell == WorldCellSnakeMovingRight || (!isOnRight && world[y][x+1] == WorldCellSnakeMovingLeft) ||
+			(isOnRight && !currentStage.boundary && world[y][0] == WorldCellSnakeMovingLeft) {
 			classes += " right"
 		}
 	} else if cell == WorldCellWall {
 		classes += " wall"
-		if !isNotOnTop || (isNotOnTop && world[y-1][x] == WorldCellWall) {
+		if isOnTop || (!isOnTop && world[y-1][x] == WorldCellWall) {
 			classes += " top"
 		}
-		if !isNotOnBottom || (isNotOnBottom && world[y+1][x] == WorldCellWall) {
+		if isOnBottom || (!isOnBottom && world[y+1][x] == WorldCellWall) {
 			classes += " bottom"
 		}
-		if !isNotOnLeft || (isNotOnLeft && world[y][x-1] == WorldCellWall) {
+		if isOnLeft || (!isOnLeft && world[y][x-1] == WorldCellWall) {
 			classes += " left"
 		}
-		if !isNotOnRight || (isNotOnRight && world[y][x+1] == WorldCellWall) {
+		if isOnRight || (!isOnRight && world[y][x+1] == WorldCellWall) {
 			classes += " right"
 		}
 	} else if cell == WorldCellFood {

@@ -207,6 +207,8 @@ func getCellContentByChar(char string) WorldCellContent {
 		return WorldCellSnakeMovingLeft
 	case "X":
 		return WorldCellWall
+	case "x":
+		return WorldCellWall
 	case "0":
 		return WorldCellFood
 	default:

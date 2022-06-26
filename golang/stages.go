@@ -65,4 +65,33 @@ var stages = []Stage{
 		name:         "A wall",
 		boundary:     true,
 	},
+	{
+		initialSnakeHead: Position{y: 10, x: 10},
+		initialSnakeTail: Position{y: 10, x: 8},
+		initialWorld: getWorldCellContentArrayFromString(
+			"                    \n" +
+				"                    \n" +
+				"  XXXX        XXXX  \n" +
+				"  X              X  \n" +
+				"  X              X  \n" +
+				"  X              X  \n" +
+				"                    \n" +
+				"                    \n" +
+				"      XXXXXXXX      \n" +
+				"                    \n" +
+				"        >>>         \n" +
+				"                    \n" +
+				"      XXXXXXXX      \n" +
+				"                    \n" +
+				"  X              X  \n" +
+				"  X              X  \n" +
+				"  X              X  \n" +
+				"  XXXX        XXXX  \n" +
+				"                    \n" +
+				"                    ",
+		),
+		initialSpeed: 500,
+		name:         "Many walls",
+		boundary:     false,
+	},
 }

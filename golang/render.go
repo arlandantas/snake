@@ -74,7 +74,6 @@ func getCellId(y, x int) string {
 }
 
 func printWorld(ignoreGameOver ...bool) {
-	fmt.Printf("%o | %o\n", currentSnakeHead, currentSnakeTail)
 	for y := range world {
 		for x := range world[y] {
 			cell, err := getElementById(getCellId(y, x))
